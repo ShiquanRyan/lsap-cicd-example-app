@@ -23,7 +23,7 @@ pipeline {
                                 passwordVariable: 'Shiquan0987627363')]) {
                     
                     script {
-                        def imageName = "${DOCKER_USER}/lsap-app:dev-${env.BUILD_NUMBER}"
+                        def imageName = "dev-${env.BUILD_NUMBER}"
                         
                         // 1. Build & Tag
                         sh "docker build -t ${imageName} ."
