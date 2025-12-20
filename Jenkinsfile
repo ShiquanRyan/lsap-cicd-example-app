@@ -15,7 +15,7 @@ pipeline {
             }
         }
         stage('Staging Environment') {
-            when { branch 'dev' }
+            when { branch 'main' }
             steps {
                 // This matches the 'ID' you created in Jenkins
                 withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
@@ -45,6 +45,49 @@ pipeline {
                         
                         // 4. Verify
                         sh "curl -f http://localhost:8081/health"
+                    }
+                }
+            }
+        }
+        stage('Production Environment') {
+            when { branch 'dev' }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
+                                                usernameVariable: 'DOCKER_USER', 
+                                                passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        // 1. 讀取設定檔 (假設內容為 dev-1)
+                        def TARGET_TAG = readFile('deploy.config').trim()
+                        
+                        // 2. 定義完整的 Image 名稱
+                        def sourceImage = "ryaninntusa/lsap_hw6:dev-${TARGET_TAG}"
+                        def prodImage   = "ryaninntusa/lsap_hw6:prod-${env.BUILD_NUMBER}"
+                        
+                        echo "Promoting ${sourceImage} to ${prodImage}"
+
+                        // 2. Artifact Promotion
+                        sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                        
+                        // 修正後的 Pull 指令
+                        sh "docker pull ${sourceImage}"
+                        sh "docker tag ${sourceImage} ${prodImage}"
+                        sh "docker push ${prodImage}"
+
+                        // 3. Deploy (記得把內部的 8080 改成 8081，如果你 Dockerfile 是寫 8081)
+                        sh '''
+                            if [ "$(docker ps -aq -f name=^/prod-app$)" ]; then
+                                echo "Found prod-app container, removing..."
+                                docker rm -f prod-app
+                            else
+                                echo "prod-app container not found, skipping removal."
+                            fi
+                        '''
+                        sh "docker run -d --name prod-app -p 8082:8081 ${prodImage}"
+                        
+                        echo "Deployment Successful on Port 8082"
+
+                        // 4. Verify
+                        sh "curl -f http://localhost:8082/health"
                     }
                 }
             }
