@@ -41,7 +41,7 @@ pipeline {
                                 echo "dev-app container not found, skipping removal."
                             fi
                         '''
-                        sh "docker run -d --name dev-app -p 8081:8080 ${imageName}"
+                        sh "docker run -d --name dev-app -p 8081:8081 ${imageName}"
                         
                         // 4. Verify
                         sh "curl -f http://localhost:8081/health"
