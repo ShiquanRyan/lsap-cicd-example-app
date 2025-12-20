@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 
+const x = 5
 
 app.get("/", (req, res) => {
   res
