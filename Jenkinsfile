@@ -55,7 +55,7 @@ pipeline {
         stage('Production Environment') {
             when { branch 'main' }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
+                withCredentials([usernamePassword(credentialsId: 'lsap_hw6', 
                                                 usernameVariable: 'DOCKER_USER', 
                                                 passwordVariable: 'DOCKER_PASS')]) {
                     script {
