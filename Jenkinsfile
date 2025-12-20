@@ -23,7 +23,7 @@ pipeline {
                                 passwordVariable: 'DOCKER_PASS')]) {
                     
                     script {
-                        def imageName = "dev-${env.BUILD_NUMBER}"
+                        def imageName = "ryaninntusa/dev-${env.BUILD_NUMBER}"
                         
                         // 1. Build & Tag
                         sh "docker build -t ${imageName} ."
