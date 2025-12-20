@@ -88,8 +88,6 @@ pipeline {
                         sh "docker run -d --name prod-app -p 8082:8081 ${prodImage}"
                         
                         echo "Deployment Successful on Port 8082"
-                        
-                        sh "sleep 3" // 等待應用啟動
 
                         // 4. Verify
                         sh "curl -f http://localhost:8082/health"
