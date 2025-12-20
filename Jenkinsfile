@@ -15,7 +15,7 @@ pipeline {
             }
         }
         stage('Staging Environment') {
-            when { branch 'main' }
+            when { branch 'dev' }
             steps {
                 // This matches the 'ID' you created in Jenkins
                 withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
@@ -23,7 +23,10 @@ pipeline {
                                 passwordVariable: 'DOCKER_PASS')]) {
                     
                     script {
-                        def imageName = "ryaninntusa/lsap_hw6:dev-${env.BUILD_NUMBER}"
+                        def packageJson = readJSON file: 'package.json'
+                        def TARGET_TAG = packageJson.version  // "1.0.0"
+
+                        def imageName = "ryaninntusa/lsap_hw6:v${TARGET_TAG}"
                         
                         // 1. Build & Tag
                         sh "docker build -t ${imageName} ."
@@ -50,7 +53,7 @@ pipeline {
             }
         }
         stage('Production Environment') {
-            when { branch 'dev' }
+            when { branch 'main' }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
                                                 usernameVariable: 'DOCKER_USER', 
