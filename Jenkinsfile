@@ -33,7 +33,14 @@ pipeline {
                         sh "docker push ${imageName}"
                         
                         // 3. Cleanup & Deploy
-                        sh "docker rm -f dev-app || true"
+                        sh '''
+                            if [ "$(docker ps -aq -f name=^/dev-app$)" ]; then
+                                echo "Found dev-app container, removing..."
+                                docker rm -f dev-app
+                            else
+                                echo "dev-app container not found, skipping removal."
+                            fi
+                        '''
                         sh "docker run -d --name dev-app -p 8081:8080 ${imageName}"
                         
                         // 4. Verify
