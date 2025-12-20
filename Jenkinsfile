@@ -19,8 +19,8 @@ pipeline {
             steps {
                 // This matches the 'ID' you created in Jenkins
                 withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
-                                usernameVariable: 'ryan', 
-                                passwordVariable: 'Shiquan0987627363')]) {
+                                usernameVariable: 'DOCKER_USER', 
+                                passwordVariable: 'DOCKER_PASS')]) {
                     
                     script {
                         def imageName = "dev-${env.BUILD_NUMBER}"
