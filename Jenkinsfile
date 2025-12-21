@@ -49,6 +49,8 @@ pipeline {
                         '''
                         sh "docker run -d --name dev-app -p 8081:8081 ${imageName}"
                         
+                        sh "sleep 3" // 等待容器啟動
+
                         // 4. Verify
                         sh "curl -f http://localhost:8081/health"
                     }
@@ -91,6 +93,8 @@ pipeline {
                         sh "docker run -d --name prod-app -p 8082:8081 ${prodImage}"
                         
                         echo "Deployment Successful on Port 8082"
+
+                        sh "sleep 3" // 等待容器啟動
 
                         // 4. Verify
                         sh "curl -f http://localhost:8082/health"
