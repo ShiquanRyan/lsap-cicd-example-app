@@ -5,6 +5,7 @@ pipeline {
     environment {
         MY_NAME = "Ryan"
         MY_ID   = "B11705059"
+        GITHUB_TOKEN = credentials('lsap_hw6')
     }
 
     stages {
@@ -18,13 +19,15 @@ pipeline {
             when { branch 'dev' }
             steps {
                 // This matches the 'ID' you created in Jenkins
-                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
+                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_docker', 
                                 usernameVariable: 'DOCKER_USER', 
                                 passwordVariable: 'DOCKER_PASS')]) {
                     
                     script {
-                        def packageJson = readJSON file: 'package.json'
-                        def TARGET_TAG = packageJson.version  // "1.0.0"
+                        def TARGET_TAG = sh(
+                            script: "node -p \"require('./package.json').version\"",
+                            returnStdout: true
+                        ).trim()
 
                         def imageName = "ryaninntusa/lsap_hw6:v${TARGET_TAG}"
                         
@@ -46,6 +49,8 @@ pipeline {
                         '''
                         sh "docker run -d --name dev-app -p 8081:8081 ${imageName}"
                         
+                        sh "sleep 3" // 等待容器啟動
+
                         // 4. Verify
                         sh "curl -f http://localhost:8081/health"
                     }
@@ -55,7 +60,7 @@ pipeline {
         stage('Production Environment') {
             when { branch 'main' }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
+                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_docker', 
                                                 usernameVariable: 'DOCKER_USER', 
                                                 passwordVariable: 'DOCKER_PASS')]) {
                     script {
@@ -88,8 +93,8 @@ pipeline {
                         sh "docker run -d --name prod-app -p 8082:8081 ${prodImage}"
                         
                         echo "Deployment Successful on Port 8082"
-                        
-                        sh "sleep 3" // 等待應用啟動
+
+                        sh "sleep 3" // 等待容器啟動
 
                         // 4. Verify
                         sh "curl -f http://localhost:8082/health"

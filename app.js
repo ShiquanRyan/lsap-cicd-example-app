@@ -2,10 +2,6 @@
 const express = require("express");
 const app = express();
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
 app.get("/", (req, res) => {
   res
     .status(200)
