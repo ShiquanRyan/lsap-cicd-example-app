@@ -24,8 +24,10 @@ pipeline {
                                 passwordVariable: 'DOCKER_PASS')]) {
                     
                     script {
-                        def packageJson = readJSON file: 'package.json'
-                        def TARGET_TAG = packageJson.version  // "1.0.0"
+                        def TARGET_TAG = sh(
+                            script: "node -p \"require('./package.json').version\"",
+                            returnStdout: true
+                        ).trim()
 
                         def imageName = "ryaninntusa/lsap_hw6:v${TARGET_TAG}"
                         
