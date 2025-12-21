@@ -117,7 +117,7 @@ pipeline {
              sh """
             curl -X POST -H "Content-Type: application/json" \
             -d '{
-              "content": "✅ **Build Passed!**\\n**Name:** ${env.MY_NAME}\\n**Student ID:** ${env.MY_ID}\\n**Job:** ${env.JOB_NAME}\\n**Branch:** ${env.BRANCH_NAME}"
+              "content": "✅ **Build Passed!**\\n**Name:** ${env.MY_NAME}\\n**Student ID:** ${env.MY_ID}\\n**Job:** ${env.JOB_NAME}\\n**Build #:** ${env.BUILD_NUMBER}\\n**Repo:** ${env.GIT_URL}\\n**Branch:** ${env.BRANCH_NAME}\\n**Status:** ${currentBuild.currentResult}"
             }' https://discord.com/api/webhooks/1446902762439971047/GZ62SXZkGOav9xy8yqpEnCtANLmeSpFsaQv7pvd3rnb8e_IV0mNPMtj2ekK3aLeqIZFf
             """
         }
