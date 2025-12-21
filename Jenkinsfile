@@ -5,6 +5,7 @@ pipeline {
     environment {
         MY_NAME = "Ryan"
         MY_ID   = "B11705059"
+        GITHUB_TOKEN = credentials('lsap_hw6')
     }
 
     stages {
@@ -18,7 +19,7 @@ pipeline {
             when { branch 'dev' }
             steps {
                 // This matches the 'ID' you created in Jenkins
-                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_cicd', 
+                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_docker', 
                                 usernameVariable: 'DOCKER_USER', 
                                 passwordVariable: 'DOCKER_PASS')]) {
                     
@@ -55,7 +56,7 @@ pipeline {
         stage('Production Environment') {
             when { branch 'main' }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'lsap_hw6', 
+                withCredentials([usernamePassword(credentialsId: 'lsap_hw6_docker', 
                                                 usernameVariable: 'DOCKER_USER', 
                                                 passwordVariable: 'DOCKER_PASS')]) {
                     script {
