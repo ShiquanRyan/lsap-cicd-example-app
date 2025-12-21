@@ -68,7 +68,7 @@ pipeline {
                         def TARGET_TAG = readFile('deploy.config').trim()
                         
                         // 2. 定義完整的 Image 名稱
-                        def sourceImage = "ryaninntusa/lsap_hw6:dev-${TARGET_TAG}"
+                        def sourceImage = "ryaninntusa/lsap_hw6:${TARGET_TAG}"
                         def prodImage   = "ryaninntusa/lsap_hw6:prod-${env.BUILD_NUMBER}"
                         
                         echo "Promoting ${sourceImage} to ${prodImage}"
