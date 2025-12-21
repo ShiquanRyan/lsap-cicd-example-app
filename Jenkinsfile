@@ -24,12 +24,14 @@ pipeline {
                                 passwordVariable: 'DOCKER_PASS')]) {
                     
                     script {
-                        def TARGET_TAG = sh(
-                            script: "node -p \"require('./package.json').version\"",
-                            returnStdout: true
-                        ).trim()
+                        // def TARGET_TAG = sh(
+                        //     script: "node -p \"require('./package.json').version\"",
+                        //     returnStdout: true
+                        // ).trim()
 
-                        def imageName = "ryaninntusa/lsap_hw6:v${TARGET_TAG}"
+                        // def imageName = "ryaninntusa/lsap_hw6:v${TARGET_TAG}"
+
+                        def imageName   = "ryaninntusa/lsap_hw6:dev-${env.BUILD_NUMBER}"
                         
                         // 1. Build & Tag
                         sh "docker build -t ${imageName} ."
